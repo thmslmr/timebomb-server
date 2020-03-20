@@ -29,9 +29,10 @@ class Game:
             return
         return 5 - (np.ceil(sum(self.deck.values()) / len(self.roles)) - 1)
 
-    def start(self, nb_player):
+    def start(self, player_ids):
         self.status = "PLAYING"
 
+        nb_player = len(player_ids)
         roles = magics.NBPLAYER_TO_ROLES[nb_player].copy()
         roles_lst = count_to_list(roles)
 
@@ -40,23 +41,39 @@ class Game:
 
         deck = magics.NBPLAYER_TO_DECK[nb_player].copy()
 
-        self.roles = roles_lst
+        self.roles = dict(zip(player_ids, roles_lst))
         self.deck = deck
         self.found = {"B": 0, "D": 0, "N": 0}
+        self.cut = player_ids[0]
 
         self.hands = self.distribute()
 
     def distribute(self):
         deck = count_to_list(self.deck)
         np.random.shuffle(deck)
-        return np.split(deck, len(self.roles))
+        hands = np.split(deck, len(self.roles))
+        return dict(zip(self.roles.keys(), hands))
 
-    def cut_card(self, player):
-        np.random.shuffle(self.hands[player])
-        card = self.hands[player][0]
-        self.hands[player] = np.delete(self.hands[player], 0)
+    def cut_card(self, player_id):
+        np.random.shuffle(self.hands[player_id])
+        card = self.hands[player_id][0]
+        self.hands[player_id] = np.delete(self.hands[player_id], 0)
 
         self.found[card] += 1
         self.deck[card] -= 1
+        self.cut = player_id
 
         return card
+
+    @property
+    def state(self):
+        return {
+            "found": self.found,
+            "left": self.deck,
+            "cut": self.cut,
+            "handround": self.hand_round,
+            "cutround": self.cut_round,
+        }
+
+    def player_state(self, player_id):
+        return {"hand": self.hands[player_id], "role": self.roles[player_id]}
