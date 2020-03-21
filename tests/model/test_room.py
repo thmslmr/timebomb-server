@@ -38,6 +38,7 @@ def test_room_init():
         "handround": None,
         "cutround": None,
         "name": "testroom",
+        "players": [],
     }
 
 
@@ -160,6 +161,7 @@ def test_room_state():
         "handround": None,
         "cutround": None,
         "name": "testroom",
+        "players": ["name_0", "name_1", "name_2", "name_3"],
     }
 
     room.start()
@@ -171,4 +173,5 @@ def test_room_state():
         "handround": 1,
         "cutround": 0,
         "name": "testroom",
+        "players": ["name_0", "name_1", "name_2", "name_3"],
     }

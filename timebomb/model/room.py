@@ -77,6 +77,7 @@ class Room:
         cutter_name = self.cutter.name if self.cutter else ""
         return {
             "name": self.name,
+            "players": [player.name for player in self.players],
             "found": self.found,
             "left": self.left,
             "cutter": cutter_name,
