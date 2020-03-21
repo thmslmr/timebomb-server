@@ -37,6 +37,7 @@ def test_room_init():
         "cutter": "",
         "handround": None,
         "cutround": None,
+        "name": "testroom",
     }
 
 
@@ -158,6 +159,7 @@ def test_room_state():
         "cutter": "",
         "handround": None,
         "cutround": None,
+        "name": "testroom",
     }
 
     room.start()
@@ -168,4 +170,5 @@ def test_room_state():
         "cutter": "name_0",
         "handround": 1,
         "cutround": 0,
+        "name": "testroom",
     }
