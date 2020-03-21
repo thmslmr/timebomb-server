@@ -8,6 +8,10 @@ pytest = "*"
 
 [packages]
 numpy = "*"
+python-socketio = "*"
+eventlet = "*"
+flask = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
