@@ -70,9 +70,7 @@ class Arena:
 
         """
         if roomname:
-            print("call with roomname", roomname)
             target_room = self.rooms.get(roomname, self.create_room(roomname))
-            print("res", target_room)
         elif len(self.open_rooms) > 0:
             target_room = self.open_rooms[0]
         else:
@@ -80,6 +78,5 @@ class Arena:
 
         if target_room.is_open:
             target_room.add_player(player)
-            print("target room ", target_room.players)
 
             return target_room
