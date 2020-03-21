@@ -42,7 +42,7 @@ def test_room_init():
 
 def test_room_start_4_players():
     room = Room("testroom")
-    room.players = [Player(i, i) for i in range(4)]
+    room.players = [Player(f"name_{i}", i) for i in range(4)]
 
     assert len(room.players) == 4
     assert room.status == "WAITING"
@@ -75,7 +75,7 @@ def test_room_start_4_players():
 
 def test_room_round_with_4_players():
     room = Room("testroom")
-    room.players = [Player(i, i) for i in range(4)]
+    room.players = [Player(f"name_{i}", i) for i in range(4)]
     room.start()
 
     assert room.cut_round == 0
@@ -132,7 +132,7 @@ def test_room_round_with_4_players():
 
 def test_room_cut_card():
     room = Room("testroom")
-    room.players = [Player(i, i) for i in range(4)]
+    room.players = [Player(f"name_{i}", i) for i in range(4)]
     room.start()
 
     assert sum(room.left.values()) == 20
@@ -150,7 +150,7 @@ def test_room_cut_card():
 
 def test_room_state():
     room = Room("testroom")
-    room.players = [Player(i, i) for i in range(4)]
+    room.players = [Player(f"name_{i}", i) for i in range(4)]
 
     assert room.state == {
         "found": {"B": 0, "D": 0, "N": 0},
@@ -165,7 +165,7 @@ def test_room_state():
     assert room.state == {
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {"B": 1, "D": 4, "N": 15},
-        "cutter": 0,
+        "cutter": "name_0",
         "handround": 1,
         "cutround": 0,
     }
