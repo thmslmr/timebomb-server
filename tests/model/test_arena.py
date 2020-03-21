@@ -4,7 +4,7 @@ from timebomb.model.arena import Arena
 def test_arena_init():
     arena = Arena()
 
-    assert arena.rooms == {}
+    assert arena.rooms == []
     assert not arena.open_rooms
 
 
@@ -17,8 +17,7 @@ def test_arena_create_room():
 
     assert room.name == "roomname"
     assert len(arena.rooms) == 1
-    assert "roomname" in arena.rooms
-    assert arena.rooms["roomname"] == room
+    assert arena.rooms[0] == room
 
 
 def test_arena_create_random_room():
@@ -28,9 +27,9 @@ def test_arena_create_random_room():
 
     room = arena.create_random_room()
 
+    assert room.name
     assert len(arena.rooms) == 1
-    assert room.name in arena.rooms
-    assert arena.rooms[room.name] == room
+    assert arena.rooms[0] == room
 
 
 def test_arena_open_rooms():
@@ -56,7 +55,7 @@ def test_arena_join_room():
 
     assert len(arena.rooms) == 1
     assert len(arena.open_rooms) == 1
-    assert arena.rooms[random_room.name] == random_room
+    assert arena.rooms[0] == random_room
     assert len(random_room.players) == 1
     assert random_room.players[0] == 1
 

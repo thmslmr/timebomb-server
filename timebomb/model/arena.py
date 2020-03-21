@@ -8,8 +8,8 @@ class Arena:
     """Arena model."""
 
     def __init__(self):
-        """Create empty rooms dictionnary."""
-        self.rooms = {}
+        """Create empty rooms list."""
+        self.rooms = []
 
     @property
     def open_rooms(self) -> list:
@@ -19,7 +19,7 @@ class Arena:
             list: List of open rooms in arena.
 
         """
-        return [room for name, room in self.rooms.items() if room.is_open]
+        return [room for room in self.rooms if room.is_open]
 
     def create_random_room(self) -> Room:
         """Create a random room.
@@ -51,9 +51,23 @@ class Arena:
             return
 
         room = Room(roomname)
-        self.rooms[roomname] = room
+        self.rooms.append(room)
 
         return room
+
+    def get_room(self, roomname: str) -> Room:
+        """Get a room by its name.
+
+        Args:
+            roomname (str): The room name.
+
+        Returns:
+            Room: The first found room with this name or None if not found.
+
+        """
+        for room in self.rooms:
+            if room.name == roomname:
+                return room
 
     def join_room(self, player: object, roomname: str = None) -> Room:
         """Add player to a room.
@@ -70,7 +84,9 @@ class Arena:
 
         """
         if roomname:
-            target_room = self.rooms.get(roomname, self.create_room(roomname))
+            target_room = self.get_room(roomname)
+            if not target_room:
+                target_room = self.create_room(roomname)
         elif len(self.open_rooms) > 0:
             target_room = self.open_rooms[0]
         else:
