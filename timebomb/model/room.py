@@ -163,32 +163,28 @@ class Room:
 
         self.players[0].is_cutting = True
 
-    def cut_card(self, src_sid: id, dst_sid: id) -> str:
+    def cut_card(self, src_player: object, dst_player: object) -> str:
         """Cut a random card in player hands.
 
         Args:
-            src_sid (id): The player sid who cuts.
-            dst_sid (id): The player sid to be cut.
+            src_player (object): The player sid who cuts.
+            dst_player (object): The player sid to be cut.
 
         Returns:
             str: The card cut.
 
         """
-        player_src = self.get_player(src_sid)
-
-        if not player_src.is_cutting:
+        if not src_player.is_cutting:
             return
 
-        player_dst = self.get_player(dst_sid)
-
-        np.random.shuffle(player_dst.hand)
-        card = player_dst.hand[0]
-        player_dst.hand = np.delete(player_dst.hand, 0)
+        np.random.shuffle(dst_player.hand)
+        card = dst_player.hand[0]
+        dst_player.hand = np.delete(dst_player.hand, 0)
 
         self.found[card] += 1
         self.left[card] -= 1
 
-        player_src.is_cutting = False
-        player_dst.is_cutting = True
+        src_player.is_cutting = False
+        dst_player.is_cutting = True
 
         return card

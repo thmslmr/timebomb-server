@@ -90,14 +90,14 @@ def test_room_round_with_4_players():
         if player.sid in [1, 2, 3] and player.is_cutting
     ]
 
-    room.cut_card(1, 2)
+    room.cut_card(room.players[1], room.players[2])
 
     assert room.cut_round == 0
     assert room.hand_round == 1
     assert room.players[0].is_cutting
     assert room.cutter.sid == 0
 
-    room.cut_card(0, 2)
+    room.cut_card(room.players[0], room.players[2])
 
     assert room.cut_round == 1
     assert room.hand_round == 1
@@ -105,9 +105,9 @@ def test_room_round_with_4_players():
     assert room.players[2].is_cutting
     assert room.cutter.sid == 2
 
-    room.cut_card(2, 1)
+    room.cut_card(room.players[2], room.players[1])
     assert room.cutter.sid == 1
-    room.cut_card(1, 3)
+    room.cut_card(room.players[1], room.players[3])
 
     assert room.cut_round == 3
     assert room.hand_round == 1
@@ -119,7 +119,7 @@ def test_room_round_with_4_players():
         if player.sid in [0, 1, 2] and player.is_cutting
     ]
 
-    room.cut_card(3, 0)
+    room.cut_card(room.players[3], room.players[0])
 
     assert room.cut_round == 0
     assert room.hand_round == 2
@@ -141,7 +141,7 @@ def test_room_cut_card():
     assert sum(room.found.values()) == 0
     assert len(room.players[1].hand) == 5
 
-    card = room.cut_card(0, 1)
+    card = room.cut_card(room.players[0], room.players[1])
 
     assert card in ["D", "N", "B"]
     assert sum(room.left.values()) == 19
