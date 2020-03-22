@@ -1,4 +1,5 @@
 from timebomb.model.arena import Arena
+from timebomb.model.player import Player
 
 
 def test_arena_init():
@@ -44,6 +45,21 @@ def test_arena_open_rooms():
     room.players = range(8)
 
     assert len(arena.open_rooms) == 0
+
+
+def test_arena_get_player():
+    arena = Arena()
+
+    assert arena.get_player(0) is None
+
+    room = arena.create_random_room()
+
+    assert arena.get_player(0) is None
+
+    new_player = Player("username", 0)
+    room.add_player(new_player)
+
+    assert arena.get_player(0) == new_player
 
 
 def test_arena_join_room():

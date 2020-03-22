@@ -95,19 +95,19 @@ class Room:
         """
         return self.status == "WAITING" and len(self.players) < magics.MAX_PLAYERS
 
-    def get_player_by_sid(self, player_sid: str) -> object:
+    def get_player(self, sid: str) -> object:
         """Get player object by its sid.
 
         Args:
-            player_sid (str): The player sid.
+            sid (str): The player sid.
 
         Returns:
             object: Player object found if exists, else None.
 
         """
-        found_player = [player for player in self.players if player.sid == player_sid]
-        if len(found_player):
-            return found_player[0]
+        for player in self.players:
+            if player.sid == sid:
+                return player
 
     def set_roles(self):
         """Set players new random role."""
@@ -174,12 +174,12 @@ class Room:
             str: The card cut.
 
         """
-        player_src = self.get_player_by_sid(src_sid)
+        player_src = self.get_player(src_sid)
 
         if not player_src.is_cutting:
             return
 
-        player_dst = self.get_player_by_sid(dst_sid)
+        player_dst = self.get_player(dst_sid)
 
         np.random.shuffle(player_dst.hand)
         card = player_dst.hand[0]

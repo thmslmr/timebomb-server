@@ -69,6 +69,21 @@ class Arena:
             if room.name == roomname:
                 return room
 
+    def get_player(self, sid: str) -> object:
+        """Get player object by its sid among all rooms.
+
+        Args:
+            sid (str): The player sid.
+
+        Returns:
+            object: Player object found if exists, else None.
+
+        """
+        for room in self.rooms:
+            player = room.get_player(sid)
+            if player:
+                return player
+
     def join_room(self, player: object, roomname: str = None) -> Room:
         """Add player to a room.
 

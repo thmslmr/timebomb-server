@@ -150,6 +150,17 @@ def test_room_cut_card():
     assert room.found[card] == 1
 
 
+def test_room_get_player():
+    room = Room("testroom")
+    room.players = [Player(f"name_{i}", i) for i in range(4)]
+
+    assert room.get_player(4) is None
+
+    new_player = Player("name_4", 4)
+    room.add_player(new_player)
+    assert room.get_player(4) == new_player
+
+
 def test_room_state():
     room = Room("testroom")
     room.players = [Player(f"name_{i}", i) for i in range(4)]
