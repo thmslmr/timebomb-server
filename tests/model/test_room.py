@@ -161,7 +161,12 @@ def test_room_state():
         "handround": None,
         "cutround": None,
         "name": "testroom",
-        "players": ["name_0", "name_1", "name_2", "name_3"],
+        "players": [
+            {"name": "name_0", "sid": 0, "is_cutting": False},
+            {"name": "name_1", "sid": 1, "is_cutting": False},
+            {"name": "name_2", "sid": 2, "is_cutting": False},
+            {"name": "name_3", "sid": 3, "is_cutting": False},
+        ],
     }
 
     room.start()
@@ -173,5 +178,10 @@ def test_room_state():
         "handround": 1,
         "cutround": 0,
         "name": "testroom",
-        "players": ["name_0", "name_1", "name_2", "name_3"],
+        "players": [
+            {"name": "name_0", "sid": 0, "is_cutting": True},
+            {"name": "name_1", "sid": 1, "is_cutting": False},
+            {"name": "name_2", "sid": 2, "is_cutting": False},
+            {"name": "name_3", "sid": 3, "is_cutting": False},
+        ],
     }
