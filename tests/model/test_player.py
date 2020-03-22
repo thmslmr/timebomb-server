@@ -8,10 +8,6 @@ def test_player_init():
 
     assert not player.role
     assert len(player.hand) == 0
-    assert not player.is_cutting
+    assert player.roomname == None
 
-    assert player.public_state == {
-        "name": "username",
-        "sid": "sid",
-        "is_cutting": False,
-    }
+    assert player.public_state == {"name": "username", "sid": "sid"}

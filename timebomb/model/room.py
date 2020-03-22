@@ -26,6 +26,7 @@ class Room:
         self.found = {"B": 0, "D": 0, "N": 0}
         self.left = {}
         self.players = []
+        self.cutter = None
 
     @property
     def cut_round(self) -> int:
@@ -54,19 +55,6 @@ class Room:
         return 5 - (np.ceil(sum(self.left.values()) / len(self.players)) - 1)
 
     @property
-    def cutter(self) -> object:
-        """Get current cuting player.
-
-        Returns:
-            object: Player who is currently cutting.
-
-        """
-        if self.status != "PLAYING":
-            return
-
-        return [player for player in self.players if player.is_cutting][0]
-
-    @property
     def state(self) -> dict:
         """Get room state.
 
@@ -74,13 +62,12 @@ class Room:
             dict: Dict containing all public room informations.
 
         """
-        cutter_name = self.cutter.name if self.cutter else ""
         return {
             "name": self.name,
             "players": [player.public_state for player in self.players],
             "found": self.found,
             "left": self.left,
-            "cutter": cutter_name,
+            "cutter": self.cutter.public_state if self.cutter else None,
             "handround": self.hand_round,
             "cutround": self.cut_round,
         }
@@ -147,6 +134,7 @@ class Room:
         """
         if self.is_open:
             self.players.append(player)
+            player.roomname = self.name
             return player
 
     def start(self):
@@ -161,7 +149,7 @@ class Room:
         self.set_hands()
         self.set_roles()
 
-        self.players[0].is_cutting = True
+        self.cutter = self.players[0]
 
     def cut_card(self, src_player: object, dst_player: object) -> str:
         """Cut a random card in player hands.
@@ -174,7 +162,7 @@ class Room:
             str: The card cut.
 
         """
-        if not src_player.is_cutting:
+        if self.cutter.sid != src_player.sid:
             return
 
         np.random.shuffle(dst_player.hand)
@@ -184,7 +172,6 @@ class Room:
         self.found[card] += 1
         self.left[card] -= 1
 
-        src_player.is_cutting = False
-        dst_player.is_cutting = True
+        self.cutter = dst_player
 
         return card

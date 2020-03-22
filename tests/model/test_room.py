@@ -34,7 +34,7 @@ def test_room_init():
     assert room.state == {
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {},
-        "cutter": "",
+        "cutter": None,
         "handround": None,
         "cutround": None,
         "name": "testroom",
@@ -82,27 +82,18 @@ def test_room_round_with_4_players():
 
     assert room.cut_round == 0
     assert room.hand_round == 1
-    assert room.players[0].is_cutting
     assert room.cutter.sid == 0
-    assert not [
-        player
-        for player in room.players
-        if player.sid in [1, 2, 3] and player.is_cutting
-    ]
 
     room.cut_card(room.players[1], room.players[2])
 
     assert room.cut_round == 0
     assert room.hand_round == 1
-    assert room.players[0].is_cutting
     assert room.cutter.sid == 0
 
     room.cut_card(room.players[0], room.players[2])
 
     assert room.cut_round == 1
     assert room.hand_round == 1
-    assert not room.players[0].is_cutting
-    assert room.players[2].is_cutting
     assert room.cutter.sid == 2
 
     room.cut_card(room.players[2], room.players[1])
@@ -111,25 +102,13 @@ def test_room_round_with_4_players():
 
     assert room.cut_round == 3
     assert room.hand_round == 1
-    assert room.players[3].is_cutting
     assert room.cutter.sid == 3
-    assert not [
-        player
-        for player in room.players
-        if player.sid in [0, 1, 2] and player.is_cutting
-    ]
 
     room.cut_card(room.players[3], room.players[0])
 
     assert room.cut_round == 0
     assert room.hand_round == 2
-    assert room.players[0].is_cutting
     assert room.cutter.sid == 0
-    assert not [
-        player
-        for player in room.players
-        if player.sid in [1, 2, 3] and player.is_cutting
-    ]
 
 
 def test_room_cut_card():
@@ -161,6 +140,20 @@ def test_room_get_player():
     assert room.get_player(4) == new_player
 
 
+def test_room_add_player():
+    room = Room("testroom")
+    player = Player("name", 0)
+
+    assert room.players == []
+    assert player.roomname is None
+
+    room.add_player(player)
+
+    assert len(room.players) == 1
+    assert room.players[0] == player
+    assert player.roomname == room.name
+
+
 def test_room_state():
     room = Room("testroom")
     room.players = [Player(f"name_{i}", i) for i in range(4)]
@@ -168,15 +161,15 @@ def test_room_state():
     assert room.state == {
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {},
-        "cutter": "",
+        "cutter": None,
         "handround": None,
         "cutround": None,
         "name": "testroom",
         "players": [
-            {"name": "name_0", "sid": 0, "is_cutting": False},
-            {"name": "name_1", "sid": 1, "is_cutting": False},
-            {"name": "name_2", "sid": 2, "is_cutting": False},
-            {"name": "name_3", "sid": 3, "is_cutting": False},
+            {"name": "name_0", "sid": 0},
+            {"name": "name_1", "sid": 1},
+            {"name": "name_2", "sid": 2},
+            {"name": "name_3", "sid": 3},
         ],
     }
 
@@ -185,14 +178,14 @@ def test_room_state():
     assert room.state == {
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {"B": 1, "D": 4, "N": 15},
-        "cutter": "name_0",
+        "cutter": {"name": "name_0", "sid": 0},
         "handround": 1,
         "cutround": 0,
         "name": "testroom",
         "players": [
-            {"name": "name_0", "sid": 0, "is_cutting": True},
-            {"name": "name_1", "sid": 1, "is_cutting": False},
-            {"name": "name_2", "sid": 2, "is_cutting": False},
-            {"name": "name_3", "sid": 3, "is_cutting": False},
+            {"name": "name_0", "sid": 0},
+            {"name": "name_1", "sid": 1},
+            {"name": "name_2", "sid": 2},
+            {"name": "name_3", "sid": 3},
         ],
     }

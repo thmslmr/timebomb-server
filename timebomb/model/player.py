@@ -1,7 +1,7 @@
 class Player:
     """Player model."""
 
-    __slots__ = ["name", "sid", "hand", "role", "is_cutting"]
+    __slots__ = ["name", "sid", "hand", "role", "roomname"]
 
     def __init__(self, name: str, sid: str):
         self.name = name
@@ -9,7 +9,7 @@ class Player:
 
         self.hand = []
         self.role = None
-        self.is_cutting = False
+        self.roomname = None
 
     @property
     def public_state(self) -> dict:
@@ -19,4 +19,4 @@ class Player:
             dict: player public state.
 
         """
-        return {"name": self.name, "sid": self.sid, "is_cutting": self.is_cutting}
+        return {"name": self.name, "sid": self.sid}

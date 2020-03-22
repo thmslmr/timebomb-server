@@ -64,50 +64,63 @@ def test_arena_get_player():
 
 def test_arena_join_room():
     arena = Arena()
+    player1 = Player("username", 0)
 
     assert len(arena.rooms) == 0
+    assert player1.roomname is None
 
-    random_room = arena.join_room(player=1)
+    random_room = arena.join_room(player1)
 
     assert len(arena.rooms) == 1
     assert len(arena.open_rooms) == 1
     assert arena.rooms[0] == random_room
     assert len(random_room.players) == 1
-    assert random_room.players[0] == 1
+    assert random_room.players[0] == player1
+    assert player1.roomname == random_room.name
 
-    join_room = arena.join_room(player=2)
+    player2 = Player("username", 1)
+    join_room = arena.join_room(player2)
 
     assert random_room == join_room
     assert len(arena.rooms) == 1
     assert len(arena.open_rooms) == 1
     assert len(join_room.players) == 2
+    assert player2.roomname == player1.roomname
 
-    custom_room = arena.join_room(player=1, roomname="roomname")
+    player3 = Player("username", 2)
+    custom_room = arena.join_room(player3, roomname="roomname")
 
     assert join_room != custom_room
     assert len(arena.rooms) == 2
     assert len(arena.open_rooms) == 2
     assert len(custom_room.players) == 1
+    assert custom_room.players[0] == player3
+    assert player3.roomname == "roomname"
     assert len(join_room.players) == 2
 
-    custom_room_2 = arena.join_room(player=2, roomname="roomname")
+    player4 = Player("username", 3)
+    custom_room_2 = arena.join_room(player4, roomname="roomname")
     assert custom_room_2 == custom_room
     assert len(arena.rooms) == 2
     assert len(custom_room_2.players) == 2
     assert len(join_room.players) == 2
 
-    custom_room_2.players = range(8)
-    join_room.players = range(8)
+    custom_room_2.players = [Player(f"name_{i}", i) for i in range(8)]
+    join_room.players = [Player(f"name_{i}", i) for i in range(8, 16)]
 
+    assert len(custom_room_2.players) == 8
+    assert len(join_room.players) == 8
     assert len(arena.rooms) == 2
     assert len(arena.open_rooms) == 0
 
-    custom_room_3 = arena.join_room(player=3, roomname="roomname")
+    player5 = Player("username", 4)
+    custom_room_3 = arena.join_room(player5, roomname="roomname")
     assert not custom_room_3
     assert len(arena.rooms) == 2
     assert len(arena.open_rooms) == 0
 
-    custom_room_3 = arena.join_room(player=1)
+    player6 = Player("username", 5)
+    custom_room_3 = arena.join_room(player6)
     assert len(arena.rooms) == 3
     assert len(arena.open_rooms) == 1
     assert len(custom_room_2.players) == 8
