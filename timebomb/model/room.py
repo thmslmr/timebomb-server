@@ -22,37 +22,27 @@ class Room:
     def __init__(self, name: str):
         self.name = name
 
-        self.status = "WAITING"
         self.found = {"B": 0, "D": 0, "N": 0}
         self.left = {}
         self.players = []
         self.cutter = None
 
     @property
-    def cut_round(self) -> int:
-        """Get current cut round.
+    def status(self) -> str:
+        """Get current room status.
 
         Returns:
-            int: cut round given by card found and nb of players.
+            str: Status name among (WAITING, READY and PLAYING).
 
         """
-        if self.status != "PLAYING":
-            return
+        if len(self.left) != 0:
+            return "PLAYING"
 
-        return sum(self.found.values()) % len(self.players)
+        if len(self.players) < magics.MIN_PLAYERS:
+            return "WAITING"
 
-    @property
-    def hand_round(self) -> int:
-        """Get current hand round.
-
-        Returns:
-            int: cut round given by card left and nb of players.
-
-        """
-        if self.status != "PLAYING":
-            return
-
-        return 5 - (np.ceil(sum(self.left.values()) / len(self.players)) - 1)
+        if len(self.players) >= magics.MIN_PLAYERS and len(self.left) == 0:
+            return "READY"
 
     @property
     def state(self) -> dict:
@@ -68,8 +58,7 @@ class Room:
             "found": self.found,
             "left": self.left,
             "cutter": self.cutter.public_state if self.cutter else None,
-            "handround": self.hand_round,
-            "cutround": self.cut_round,
+            "status": self.status,
         }
 
     @property
@@ -80,7 +69,7 @@ class Room:
             bool: If room is open.
 
         """
-        return self.status == "WAITING" and len(self.players) < magics.MAX_PLAYERS
+        return self.status != "PLAYING" and len(self.players) < magics.MAX_PLAYERS
 
     def get_player(self, sid: str) -> object:
         """Get player object by its sid.
@@ -142,8 +131,6 @@ class Room:
         if len(self.players) < magics.MIN_PLAYERS:
             return
 
-        self.status = "PLAYING"
-
         self.left = magics.NBPLAYER_TO_DECK[len(self.players)].copy()
 
         self.set_hands()
@@ -163,6 +150,9 @@ class Room:
 
         """
         if self.cutter.sid != src_player.sid:
+            return
+
+        if src_player.sid == dst_player.sid:
             return
 
         np.random.shuffle(dst_player.hand)

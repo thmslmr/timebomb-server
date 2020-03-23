@@ -16,9 +16,6 @@ def test_room_init():
     room = Room("testroom")
     assert room.status == "WAITING"
     assert room.name == "testroom"
-
-    assert room.cut_round is None
-    assert room.hand_round is None
     assert room.cutter is None
 
     assert type(room.found) is dict
@@ -35,19 +32,21 @@ def test_room_init():
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {},
         "cutter": None,
-        "handround": None,
-        "cutround": None,
         "name": "testroom",
+        "status": "WAITING",
         "players": [],
     }
 
 
 def test_room_start_4_players():
     room = Room("testroom")
+
+    assert room.status == "WAITING"
+
     room.players = [Player(f"name_{i}", i) for i in range(4)]
 
     assert len(room.players) == 4
-    assert room.status == "WAITING"
+    assert room.status == "READY"
     assert not room.left
     assert room.found == {"B": 0, "D": 0, "N": 0}
 
@@ -56,8 +55,6 @@ def test_room_start_4_players():
     assert room.status == "PLAYING"
     assert room.left == {"B": 1, "D": 4, "N": 15}
     assert room.found == {"B": 0, "D": 0, "N": 0}
-    assert room.hand_round == 1
-    assert room.cut_round == 0
     assert room.cutter == room.players[0]
 
     all_roles = []
@@ -80,34 +77,29 @@ def test_room_round_with_4_players():
     room.players = [Player(f"name_{i}", i) for i in range(4)]
     room.start()
 
-    assert room.cut_round == 0
-    assert room.hand_round == 1
+    assert sum(room.found.values()) == 0
     assert room.cutter.sid == 0
 
     room.cut_card(room.players[1], room.players[2])
 
-    assert room.cut_round == 0
-    assert room.hand_round == 1
+    assert sum(room.found.values()) == 0
     assert room.cutter.sid == 0
 
     room.cut_card(room.players[0], room.players[2])
 
-    assert room.cut_round == 1
-    assert room.hand_round == 1
+    assert sum(room.found.values()) == 1
     assert room.cutter.sid == 2
 
     room.cut_card(room.players[2], room.players[1])
     assert room.cutter.sid == 1
     room.cut_card(room.players[1], room.players[3])
 
-    assert room.cut_round == 3
-    assert room.hand_round == 1
+    assert sum(room.found.values()) == 3
     assert room.cutter.sid == 3
 
     room.cut_card(room.players[3], room.players[0])
 
-    assert room.cut_round == 0
-    assert room.hand_round == 2
+    assert sum(room.found.values()) == 4
     assert room.cutter.sid == 0
 
 
@@ -162,9 +154,8 @@ def test_room_state():
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {},
         "cutter": None,
-        "handround": None,
-        "cutround": None,
         "name": "testroom",
+        "status": "READY",
         "players": [
             {"name": "name_0", "sid": 0},
             {"name": "name_1", "sid": 1},
@@ -179,9 +170,8 @@ def test_room_state():
         "found": {"B": 0, "D": 0, "N": 0},
         "left": {"B": 1, "D": 4, "N": 15},
         "cutter": {"name": "name_0", "sid": 0},
-        "handround": 1,
-        "cutround": 0,
         "name": "testroom",
+        "status": "PLAYING",
         "players": [
             {"name": "name_0", "sid": 0},
             {"name": "name_1", "sid": 1},
