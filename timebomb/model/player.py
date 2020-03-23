@@ -20,3 +20,18 @@ class Player:
 
         """
         return {"name": self.name, "sid": self.sid}
+
+    @property
+    def private_state(self) -> dict:
+        """Get private player infos.
+
+        Returns:
+            dict: private player state.
+
+        """
+        return {
+            "name": self.name,
+            "sid": self.sid,
+            "hand": list(self.hand),
+            "role": self.role,
+        }

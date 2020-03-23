@@ -11,3 +11,9 @@ def test_player_init():
     assert player.roomname == None
 
     assert player.public_state == {"name": "username", "sid": "sid"}
+    assert player.private_state == {
+        "name": "username",
+        "sid": "sid",
+        "hand": [],
+        "role": None,
+    }
