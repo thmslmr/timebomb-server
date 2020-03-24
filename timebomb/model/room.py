@@ -35,7 +35,13 @@ class Room:
             str: Status name among (WAITING, READY and PLAYING).
 
         """
-        if len(self.left) != 0:
+        if len(self.left) and (
+            self.found["B"] > 0
+            or self.found["D"] == len(self.players)
+            or sum(self.left.values()) <= len(self.players)
+        ):
+            return "ENDED"
+        if len(self.left):
             return "PLAYING"
 
         if len(self.players) < magics.MIN_PLAYERS:
