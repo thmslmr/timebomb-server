@@ -12,6 +12,9 @@ python-socketio = "*"
 eventlet = "*"
 flask = "*"
 gunicorn = "*"
+marshmallow = "*"
+flask-restplus = "*"
+werkzeug = "==0.16.1"
 
 [requires]
 python_version = "3.7"
