@@ -1,8 +1,5 @@
-from pytest import fixture
-
 from timebomb.player.model import Player
 from timebomb.player.schema import PlayerSchema
-from timebomb.player.interface import PlayerInterface
 
 
 def test_PlayerSchema_create():
@@ -11,25 +8,23 @@ def test_PlayerSchema_create():
 
 def test_PlayerSchema_load():
     schema = PlayerSchema()
-    params: PlayerInterface = schema.load(
-        {"name": "username", "id": "userid", "roomId": "roomid"}
-    )
+    params = schema.load({"name": "username", "id": "userid"})
     player = Player(**params)
 
     assert player.name == "username"
     assert player.id == "userid"
-    assert player.roomid == "roomid"
 
 
 def test_PlayerSchema_dump():
-    schema = PlayerSchema()
-    player = Player("username", "userid", "roomid")
-    player_infos: PlayerInterface = schema.dump(player)
+    player = Player("username", "userid")
 
-    assert player_infos == {
+    schema = PlayerSchema()
+    player_json = schema.dump(player)
+
+    assert player_json == {
         "name": "username",
         "id": "userid",
-        "roomId": "roomid",
-        "hand": None,
+        "roomId": None,
+        "hand": [],
         "team": None,
     }
