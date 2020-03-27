@@ -1,1 +1,1 @@
-web: gunicorn -k eventlet -w 1 timebomb.app:app
+web: gunicorn -k eventlet -w 1 timebomb.main:app

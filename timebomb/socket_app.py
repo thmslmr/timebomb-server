@@ -35,6 +35,11 @@ class MainNamespace(socketio.Namespace):
         return data
 
     def on_login(self, sid: str, data: dict) -> dict:
+        player = PlayerService.get_by_id(sid)
+
+        if player:
+            return {"status": "ERROR", "data": {"message": "Player already logged in."}}
+
         username = data.get("username")
         room_name = data.get("roomname")
 
@@ -77,13 +82,16 @@ class MainNamespace(socketio.Namespace):
             return {"status": "ERROR", "data": {"message": "Player not logged in."}}
 
         if src_player.room_id != target_player.room_id:
-            return {"status": "ERROR", "data": {"message": "Can not cut this player."}}
+            return {
+                "status": "ERROR",
+                "data": {"message": "Can not cut player from other room."},
+            }
 
         room = RoomService.get_by_id(target_player.room_id)
         if not room:
             return {"status": "ERROR", "data": {"message": "Invalid room."}}
 
-        card = RoomService.cut(room, src_player, target_id)
+        card = RoomService.cut_card(room, src_player, target_player)
         if not card:
             return {"status": "ERROR", "data": {"message": "Error while cutting."}}
 
@@ -101,7 +109,7 @@ class MainNamespace(socketio.Namespace):
         return {"status": "SUCCESS", "data": json}
 
     def on_start(self, sid: str) -> dict:
-        player = PlayerService.get_by_id(id)
+        player = PlayerService.get_by_id(sid)
 
         if not player:
             return {"status": "ERROR", "data": {"message": "Player not logged in."}}
@@ -112,7 +120,10 @@ class MainNamespace(socketio.Namespace):
 
         res = RoomService.start(room)
         if not res:
-            return {"status": "ERROR", "data": {"message": "Room not ready to start."}}
+            return {
+                "status": "ERROR",
+                "data": {"message": "Can not start game in this room."},
+            }
 
         for player in room.players:
             self.emit_player(player)
@@ -121,7 +132,7 @@ class MainNamespace(socketio.Namespace):
         return {"status": "SUCCESS", "data": json}
 
     def on_chat(self, sid: str, data: dict) -> dict:
-        player = PlayerService.get_by_id(id)
+        player = PlayerService.get_by_id(sid)
 
         if not player:
             return {"status": "ERROR", "data": {"message": "Player not logged in."}}
@@ -135,12 +146,11 @@ class MainNamespace(socketio.Namespace):
             return {"status": "ERROR", "data": {"message": "Invalid data."}}
 
         data = {"player": player.name, "message": message}
-
         json = self.emit_chat(room, data)
         return {"status": "SUCCESS", "data": json}
 
     def on_disconnect(self, sid: str) -> dict:
-        player = PlayerService.get_by_id(id)
+        player = PlayerService.get_by_id(sid)
 
         if not player:
             return {"status": "SUCCESS", "data": {"message": "Player disconnect."}}
@@ -153,6 +163,7 @@ class MainNamespace(socketio.Namespace):
             self.emit_end(room)
             self.emit_notify(room, {"message": f"{player.name} has left the game"})
 
-        room.remove(player)
+        room.players.remove(player)
         PlayerService.delete(player)
+
         return {"status": "SUCCESS", "data": {"message": "Player disconnect."}}
