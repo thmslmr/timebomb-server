@@ -1,17 +1,17 @@
 NBPLAYER_TO_DECK = {
-    4: {"B": 1, "D": 4, "N": 15},
-    5: {"B": 1, "D": 5, "N": 19},
-    6: {"B": 1, "D": 6, "N": 23},
-    7: {"B": 1, "D": 7, "N": 27},
-    8: {"B": 1, "D": 8, "N": 31},
+    4: {"B": 1, "D": 4, "S": 15},
+    5: {"B": 1, "D": 5, "S": 19},
+    6: {"B": 1, "D": 6, "S": 23},
+    7: {"B": 1, "D": 7, "S": 27},
+    8: {"B": 1, "D": 8, "S": 31},
 }
 
 NBPLAYER_TO_ROLES = {
-    4: {"B": 3, "R": 2},
-    5: {"B": 3, "R": 2},
-    6: {"B": 4, "R": 2},
-    7: {"B": 5, "R": 3},
-    8: {"B": 5, "R": 3},
+    4: {"Sherlock": 3, "Moriarty": 2},
+    5: {"Sherlock": 3, "Moriarty": 2},
+    6: {"Sherlock": 4, "Moriarty": 2},
+    7: {"Sherlock": 5, "Moriarty": 3},
+    8: {"Sherlock": 5, "Moriarty": 3},
 }
 
 MAX_PLAYERS = max(NBPLAYER_TO_DECK.keys())

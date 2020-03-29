@@ -62,7 +62,7 @@ def test_EndedRoomSchema_dump_with_player():
 
     player.team = "team1"
     room.players.append(player)
-    room.cutter = player
+    room.cards_found = {"B": 1}
 
     schema = EndedRoomSchema()
     room_json = schema.dump(room)
@@ -70,5 +70,6 @@ def test_EndedRoomSchema_dump_with_player():
     assert room_json == {
         "name": "name",
         "id": "id",
+        "winning_team": ["Moriarty", "The bomb has been triggered."],
         "players": [{"name": "username", "id": "id", "team": "team1"}],
     }

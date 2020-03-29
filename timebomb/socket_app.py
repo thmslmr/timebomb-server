@@ -66,7 +66,7 @@ class MainNamespace(socketio.Namespace):
                 "data": {"message": "Impossible to join this room."},
             }
 
-        self.enter_room(sid, room.name)
+        self.enter_room(sid, room.id)
         json = self.emit_room(room)
         return {"status": "SUCCESS", "data": json}
 
@@ -104,7 +104,8 @@ class MainNamespace(socketio.Namespace):
             for player in room.players:
                 self.emit_player(player)
 
-        self.emit_notify(target_player, {"data": "Your turn to cut a card!"})
+        self.emit_notify(target_player, {"message": "Your turn to cut a card!"})
+        self.emit_player(target_player)
         json = self.emit_room(room)
         return {"status": "SUCCESS", "data": json}
 
@@ -161,9 +162,19 @@ class MainNamespace(socketio.Namespace):
 
         if room.status == "PLAYING":
             self.emit_end(room)
-            self.emit_notify(room, {"message": f"{player.name} has left the game"})
+            self.emit_notify(room, {"message": f"{player.name} has left the game."})
+            for r_player in room.players:
+                self.leave_room(r_player.id, room.id)
+                room.players.remove(r_player)
+                PlayerService.delete(r_player)
+            RoomService.delete(room)
 
-        room.players.remove(player)
-        PlayerService.delete(player)
+        else:
+            self.leave_room(player.id, room.id)
+            room.players.remove(player)
+            if not len(room.players):
+                RoomService.delete(room)
+
+            PlayerService.delete(player)
 
         return {"status": "SUCCESS", "data": {"message": "Player disconnect."}}

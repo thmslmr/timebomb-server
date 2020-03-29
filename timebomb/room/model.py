@@ -38,6 +38,17 @@ class Room:
         )
 
     @property
+    def winning_team(self) -> str:
+        if self.cards_found.get("B", 0) > 0:
+            return "Moriarty", "The bomb has been triggered."
+
+        if self.nb_players and self.cards_found.get("D", 0) == self.nb_players:
+            return "Sherlock", "The bomb has been fully defused."
+
+        if self.cards_left and sum(self.cards_left.values()) <= self.nb_players:
+            return "Moriarty", "The bomb has not been defused in time."
+
+    @property
     def status(self) -> str:
         if self.nb_players < magics.MIN_PLAYERS:
             return "WAITING"
@@ -45,11 +56,7 @@ class Room:
         if self.nb_players >= magics.MIN_PLAYERS and not self.cards_left:
             return "READY"
 
-        if self.cards_left and (
-            self.cards_found.get("B", 0) > 0
-            or self.cards_found.get("D", 0) == self.nb_players
-            or sum(self.cards_left.values()) <= self.nb_players
-        ):
+        if self.winning_team:
             return "ENDED"
 
         if self.cards_left:

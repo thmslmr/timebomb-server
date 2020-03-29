@@ -56,12 +56,12 @@ class RoomService:
         return new_room
 
     @staticmethod
-    def start(room: Room) -> Room:
+    def start(room: Room) -> bool:
         if room.status != "READY":
             return
 
         cards_left = magics.NBPLAYER_TO_DECK[room.nb_players].copy()
-        cards_found = {"B": 0, "D": 0, "N": 0}
+        cards_found = {"B": 0, "D": 0, "S": 0}
 
         roles = magics.NBPLAYER_TO_ROLES[room.nb_players].copy()
         roles_lst = np.repeat(list(roles.keys()), list(roles.values()))
@@ -89,7 +89,7 @@ class RoomService:
         return True
 
     @staticmethod
-    def distribute_cards(room: Room) -> Room:
+    def distribute_cards(room: Room) -> bool:
         if room.status not in ["PLAYING", "READY"]:
             return
 
@@ -109,7 +109,7 @@ class RoomService:
         return True
 
     @staticmethod
-    def cut_card(room: Room, from_player, to_player) -> Room:
+    def cut_card(room: Room, from_player, to_player) -> str:
         if room.status != "PLAYING":
             return
 
@@ -131,7 +131,7 @@ class RoomService:
         return cutted
 
     @staticmethod
-    def add_player(room: Room, player) -> tuple:
+    def add_player(room: Room, player) -> bool:
         if not room.is_open:
             return
 

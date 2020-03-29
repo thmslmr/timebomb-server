@@ -22,6 +22,7 @@ def test_Room_create(room: Room):
     assert room.status == "WAITING"
     assert room.nb_players == 0
     assert room.is_open
+    assert room.winning_team is None
 
 
 def test_Room_status(room: Room):

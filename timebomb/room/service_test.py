@@ -209,5 +209,5 @@ def test_RoomService_distribute_cards(room_db: list):
     assert len(room.cards_left) == 3 and sum(room.cards_left.values()) == 20
 
     for player in room.players:
-        assert player.team in ["B", "R"]
+        assert player.team in ["Sherlock", "Moriarty"]
         assert len(player.hand) == 5
