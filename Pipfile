@@ -12,6 +12,7 @@ numpy = "*"
 python-socketio = "*"
 eventlet = "*"
 gunicorn = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.7"
